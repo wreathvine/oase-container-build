@@ -1,0 +1,74 @@
+version: "3"
+services:
+  oase-rabbitmq:
+    image: rabbitmq:3.9.8-management
+    container_name: oase-rabbitmq
+    hostname: oase-rabbitmq
+    restart: always
+    tty: true
+    ports:
+      # - '4369:4369'
+      # - '5671:5671'
+      - '5672:5672'
+      # - '15691:15691'
+      # - '15692:15692'
+      - '15672:15672'
+      # - '25672:25672'
+    # volumes:
+      # - rabbitmq-data:/var/lib/rabbitmq
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD}
+  oase-mariadb:
+    image: mariadb:10.6.4
+    container_name: oase-mariadb
+    hostname: oase-mariadb
+    # privileged: true
+    restart: always
+    tty: true
+    # command:
+    #   - mysqld
+    #   - --character-set-server=utf8mb4
+    #   - --collation-server=utf8mb4_unicode_ci
+    ports:
+      - "3306:3306"
+    environment:
+      TZ: "Asia/Tokyo"
+      MARIADB_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD}
+      MARIADB_DATABASE: ${MARIADB_DATABASE}
+      MARIADB_USER: ${MARIADB_USER}
+      MARIADB_PASSWORD: ${MARIADB_PASSWORD}
+    # volumes:
+      # - ./configs/server.cnf:/etc/my.cnf.d/server.cnf
+      # - mariadb-data:/var/lib/mysql
+  oase-drools:
+    image: exastro/oase-business-central:latest
+    container_name: oase-drools
+    hostname: oase-drools
+    # privileged: true
+    restart: always
+    tty: true
+    ports:
+      - "8001:8001"
+      - "8080:8080"
+      - "9990:9990"
+    environment:
+    #   TZ: "Asia/Tokyo"
+      DROOLS_USER_NAME: ${DROOLS_USER_NAME}
+      DROOLS_USER_PASSWORD: ${DROOLS_USER_PASSWORD}
+      DROOLS_USER_ROLE: ${DROOLS_USER_ROLE}
+    #   MARIADB_DATABASE: ${MARIADB_DATABASE}
+    #   MARIADB_USER: ${MARIADB_USER}
+    #   MARIADB_PASSWORD: ${MARIADB_PASSWORD}
+    # volumes:
+      # - ./configs/application-users.properties:/opt/jboss/wildfly/standalone/configuration/application-users.properties
+      # - ./configs/application-roles.properties:/opt/jboss/wildfly/standalone/configuration/application-roles.properties
+      # - ./configs/standalone.xml:/opt/jboss/wildfly/standalone/configuration/standalone.xml
+      # - ./configs/jbpm-custom.cli:/opt/jboss/wildfly/bin/jbpm-custom.cli
+      # - ./configs/standalone.sh:/opt/jboss/wildfly/bin/standalone.sh
+      # - ./configs/server.cnf:/etc/my.cnf.d/server.cnf
+      # - mariadb-data:/var/lib/mysql
+
+volumes:
+  rabbitmq-data:
+  mariadb-data:
