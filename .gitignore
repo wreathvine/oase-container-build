@@ -1,4 +1,5 @@
-
+.env
+.talismanrc
 */volume/*
 */logs/*
 *.bk
