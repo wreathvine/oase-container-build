@@ -1436,6 +1436,7 @@ def build_kjar(request):
             # ビルド実行
             exec_cmd = []
             exec_cmd.append('mvn')
+            exec_cmd.append('-o')
             exec_cmd.append('install')
             exec_cmd.append('-Ddrools.dateformat=yyyy-MM-dd HH:mm')
             exec_cmd.append('-f')

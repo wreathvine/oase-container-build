@@ -1,6 +1,12 @@
+ARG OASE_VERSION
+ARG HTTP_PROXY
+ARG HTTPS_PROXY
+
 FROM python:3.6
 
-ARG OASE_VERSION
+ENV OASE_VERSION=${OASE_VERSION:-latest}
+ENV http_proxy=${HTTP_PROXY}
+ENV https_proxy=${HTTPS_PROXY}
 
 # Clone OASE artifacts
 RUN mkdir /exastro
@@ -8,7 +14,7 @@ WORKDIR /exastro
 RUN if [ "${OASE_VERSION}" = "latest" ]; then \
       echo "OASE_VERSION: ${OASE_VERSION}"; \
       git clone --depth=1 --single-branch https://github.com/exastro-suite/oase.git \
-      -b master OASE; \
+      OASE; \
     else \
       echo "OASE_VERSION: ${OASE_VERSION}"; \
       git clone --depth=1 --single-branch https://github.com/exastro-suite/oase.git \
@@ -29,11 +35,13 @@ RUN sed -i -e '/^SESSION_ENGINE/s/.*/SESSION_ENGINE = '\''django.contrib.session
  && sed -i -e 's/^#}/}/g' /exastro/OASE/oase-root/confs/frameworkconfs/settings.py \
  && sed -i -e "/^        'HOST'     :/s/127.0.0.1/oase-mariadb/g" /exastro/OASE/oase-root/confs/frameworkconfs/settings.py
 
-
 # Install Python packages
 RUN pip install --no-cache-dir -r /exastro/OASE/oase_install_package/install_scripts/list/requirements.txt
 
 RUN groupadd -g 49152 oase \
  && useradd -r -u 49152 -g oase oase
+
+ENV http_proxy=
+ENV https_proxy=
 
 USER 49152

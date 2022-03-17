@@ -1,6 +1,11 @@
 ARG OASE_VERSION
+ARG HTTP_PROXY
+ARG HTTPS_PROXY
 
 FROM exastro/oase-backyard:${OASE_VERSION}
+
+ENV http_proxy=${HTTP_PROXY}
+ENV https_proxy=${HTTPS_PROXY}
 
 # Environments
 ENV M2_HOME=/opt/apache-maven
@@ -15,7 +20,7 @@ USER root
 
 # Install packages
 RUN apt-get update && apt-get install -y \
-    wget \
+    curl \
     default-mysql-client \
     openjdk-11-jdk \
  && apt-get clean \
@@ -23,7 +28,7 @@ RUN apt-get update && apt-get install -y \
 
 # Install maven packages
 WORKDIR /tmp
-RUN wget https://archive.apache.org/dist/maven/maven-3/3.6.1/binaries/apache-maven-3.6.1-bin.tar.gz \
+RUN curl -k -LO https://archive.apache.org/dist/maven/maven-3/3.6.1/binaries/apache-maven-3.6.1-bin.tar.gz \
  && tar xvzf apache-maven-3.6.1-bin.tar.gz \
  && mv apache-maven-3.6.1 /opt/ \
  && ln -s /opt/apache-maven-3.6.1 /opt/apache-maven \
@@ -35,6 +40,9 @@ RUN cp /exastro/OASE/oase_install_package/OASE/oase-contents/oase_maven.tar.gz .
  && rm oase_maven.tar.gz
 
 WORKDIR /exastro/OASE/oase-root
+
+ENV http_proxy=
+ENV https_proxy=
 
 USER 49152
 

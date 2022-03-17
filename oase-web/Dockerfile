@@ -1,4 +1,6 @@
 ARG OASE_VERSION
+ARG HTTP_PROXY
+ARG HTTPS_PROXY
 
 FROM exastro/oase-base:${OASE_VERSION} as resource
 FROM httpd:2.4 as apache24
@@ -6,6 +8,9 @@ FROM httpd:2.4 as apache24
 FROM python:3.6-slim
 
 # Enviroments
+ENV OASE_VERSION=${OASE_VERSION:-latest}
+ENV http_proxy=${HTTP_PROXY}
+ENV https_proxy=${HTTPS_PROXY}
 ENV HTTPD_VERSION=2.4.52
 ENV HTTPD_PATCHES=
 ENV HTTPD_SHA256=0127f7dc497e9983e9c51474bed75e45607f2f870a7675a86dc90af6d572f5c9
