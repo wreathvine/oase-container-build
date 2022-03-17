@@ -1,0 +1,200 @@
+################################
+# システム設定
+################################
+- model: web_app.System
+  pk: 2
+  fields:
+    config_name: Rule file installation route path
+    category: RULE
+    config_id: RULEFILE_ROOTPATH
+    value: /exastro/rule
+    maintenance_flag: 0
+    last_update_timestamp: 2019-07-01T00:00:00+0900
+    last_update_user: システム管理者
+
+- model: web_app.System
+  pk: 26
+  fields:
+    config_name: DM Request recipient
+    category: DMSETTINGS
+    config_id: DM_IPADDRPORT
+    value: business-central:8080
+    maintenance_flag: 0
+    last_update_timestamp: 2019-07-01T00:00:00+0900
+    last_update_user: システム管理者
+
+- model: web_app.System
+  pk: 27
+  fields:
+    config_name: DM User ID
+    category: DMSETTINGS
+    config_id: DM_USERID
+    value: admin0000
+    maintenance_flag: 0
+    last_update_timestamp: 2019-07-01T00:00:00+0900
+    last_update_user: システム管理者
+
+- model: web_app.System
+  pk: 28
+  fields:
+    config_name: DM Password
+    category: DMSETTINGS
+    config_id: DM_PASSWD
+    value: yourpass
+    maintenance_flag: 0
+    last_update_timestamp: 2019-07-01T00:00:00+0900
+    last_update_user: システム管理者
+
+- model: web_app.System
+  pk: 29
+  fields:
+    config_name: Application standby information
+    category: APPLYSETTINGS
+    config_id: APPLY_IPADDRPORT
+    value: oase-apply:50001
+    maintenance_flag: 0
+    last_update_timestamp: 2019-07-01T00:00:00+0900
+    last_update_user: システム管理者
+
+- model: web_app.System
+  pk: 31
+  fields:
+    config_name: OASE Mail SMTP
+    category: OASE_MAIL
+    config_id: OASE_MAIL_SMTP
+    value: {}
+    maintenance_flag: 0
+    last_update_timestamp: 2019-07-01T00:00:00+0900
+    last_update_user: システム管理者
+
+- model: web_app.System
+  pk: 32
+  fields:
+    config_name: Maven repository path
+    category: RULE
+    config_id: MAVENREP_PATH
+    value: /home/oase/.m2/repository/com/oase/
+    maintenance_flag: 0
+    last_update_timestamp: 2019-07-01T00:00:00+0900
+    last_update_user: システム管理者
+
+- model: web_app.System
+  pk: 50
+  fields:
+    config_name: RabbitMQ User ID
+    category: RABBITMQ
+    config_id: MQ_USER_ID
+    value: admin
+    maintenance_flag: 0
+    last_update_timestamp: 2019-07-01T00:00:00+0900
+    last_update_user: システム管理者
+
+- model: web_app.System
+  pk: 51
+  fields:
+    config_name: RabbitMQ Password
+    category: RABBITMQ
+    config_id: MQ_PASSWORD
+    value: yourpass
+    maintenance_flag: 0
+    last_update_timestamp: 2019-07-01T00:00:00+0900
+    last_update_user: システム管理者
+
+- model: web_app.System
+  pk: 52
+  fields:
+    config_name: RabbitMQ IP Address
+    category: RABBITMQ
+    config_id: MQ_IPADDRESS
+    value: oase-rabbitmq
+    maintenance_flag: 0
+    last_update_timestamp: 2019-07-01T00:00:00+0900
+    last_update_user: システム管理者
+
+- model: web_app.System
+  pk: 53
+  fields:
+    config_name: RabbitMQ Queue name
+    category: RABBITMQ
+    config_id: MQ_QUEUE_NAME
+    value: oase
+    maintenance_flag: 0
+    last_update_timestamp: 2019-07-01T00:00:00+0900
+    last_update_user: システム管理者
+
+- model: web_app.System
+  pk: 60
+  fields:
+    config_name: DM Request recipient for kie
+    category: DMSETTINGS
+    config_id: DM_IPADDRPORT_KIE
+    value: kie-server:8080
+    maintenance_flag: 0
+    last_update_timestamp: 2019-07-01T00:00:00+0900
+    last_update_user: システム管理者
+
+
+################################
+# アクション種別
+################################
+- model: web_app.ActionType
+  pk: 1
+  fields:
+    driver_type_id: 1
+    disuse_flag: 0
+    last_update_timestamp: 2019-07-01T00:00:00+0900
+    last_update_user: システム管理者
+
+- model: web_app.ActionType
+  pk: 2
+  fields:
+    driver_type_id: 2
+    disuse_flag: 0
+    last_update_timestamp: 2019-07-01T00:00:00+0900
+    last_update_user: システム管理者
+
+- model: web_app.ActionType
+  pk: 3
+  fields:
+    driver_type_id: 3
+    disuse_flag: 0
+    last_update_timestamp: 2019-07-01T00:00:00+0900
+    last_update_user: システム管理者
+
+
+################################
+# モニタリング種別
+################################
+- model: web_app.MonitoringType
+  pk: 1
+  fields:
+    adapter_type_id: 1
+    disuse_flag: 0
+    last_update_timestamp: 2019-07-01T00:00:00+0900
+    last_update_user: システム管理者
+
+- model: web_app.MonitoringType
+  pk: 2
+  fields:
+    adapter_type_id: 2
+    disuse_flag: 0
+    last_update_timestamp: 2019-07-01T00:00:00+0900
+    last_update_user: システム管理者
+
+- model: web_app.MonitoringType
+  pk: 3
+  fields:
+    adapter_type_id: 3
+    disuse_flag: 0
+    last_update_timestamp: 2019-07-01T00:00:00+0900
+    last_update_user: システム管理者
+
+- model: web_app.MonitoringType
+  pk: 4
+  fields:
+    adapter_type_id: 4
+    disuse_flag: 0
+    last_update_timestamp: 2019-07-01T00:00:00+0900
+    last_update_user: システム管理者
+
+
