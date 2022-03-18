@@ -40,7 +40,15 @@ RUN pip3 install --no-cache-dir -r /exastro/OASE/oase_install_package/install_sc
 WORKDIR /usr/local/apache2/conf
 COPY --chown=www-data:www-data ./files/oase.conf ./extra/
 COPY --chown=www-data:www-data ./files/httpd.conf ./httpd.conf
+COPY --chown=www-data:www-data ./files/docker-entrypoint.sh /docker-entrypoint.sh
+RUN chmod a+x /docker-entrypoint.sh
+
+ENV http_proxy=
+ENV https_proxy=
+
+WORKDIR /exastro/OASE/oase-root
 
 EXPOSE 80
 
 CMD ["httpd-foreground"]
+ENTRYPOINT ["/docker-entrypoint.sh"]
