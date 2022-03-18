@@ -219,7 +219,6 @@ services:
     volumes:
       - ./oase-zabbix-monitoring/logs:/exastro/OASE/oase-root/logs/backyardlogs/oase_monitoring
     networks:
-      - public
       - private
 
   oase-rabbitmq:
@@ -228,14 +227,14 @@ services:
     hostname: oase-rabbitmq
     restart: on-failure
     tty: true
-    ports:
-      - '5672:5672'
-      - '15672:15672'
-    # volumes:
-      # - rabbitmq-data:/var/lib/rabbitmq
     environment:
       RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER:-admin}
       RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD:-Ch@ngeMe}
+    # volumes:
+      # - rabbitmq-data:/var/lib/rabbitmq
+    ports:
+      - '5672:5672'
+      - '15672:15672'
     networks:
       - public
       - private
