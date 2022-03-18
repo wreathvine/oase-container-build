@@ -1,9 +1,12 @@
 ARG OASE_VERSION
-ARG HTTP_PROXY
-ARG HTTPS_PROXY
 
 FROM exastro/oase-backyard:${OASE_VERSION}
 
+ARG OASE_VERSION
+ARG HTTP_PROXY
+ARG HTTPS_PROXY
+
+ENV OASE_VERSION=${OASE_VERSION}
 ENV http_proxy=${HTTP_PROXY}
 ENV https_proxy=${HTTPS_PROXY}
 
@@ -15,6 +18,7 @@ ENV PATH=$PATH:/opt/apache-maven/bin:$JAVA_HOME/bin
 
 # Fixed oase_apply.py for container
 COPY --chown=oase:oase ./files/oase_apply.py /exastro/OASE/oase-root/backyards/apply_driver/
+COPY --chown=oase:oase ./files/settings.xml /home/oase/.m2/
 
 USER root
 
@@ -34,10 +38,11 @@ RUN curl -k -LO https://archive.apache.org/dist/maven/maven-3/3.6.1/binaries/apa
  && ln -s /opt/apache-maven-3.6.1 /opt/apache-maven \
  && mkdir -p /home/oase/.m2/repository
 WORKDIR /home/oase/.m2/repository
-RUN cp /exastro/OASE/oase_install_package/OASE/oase-contents/oase_maven.tar.gz . \
- && tar xvzf oase_maven.tar.gz \
+RUN echo "OASE_VERSION: ${OASE_VERSION}"
+RUN curl -k -LO "https://github.com/exastro-suite/oase/releases/download/${OASE_VERSION}/oase_maven-${OASE_VERSION}.tar.gz" \
+ && tar xvzf oase_maven-${OASE_VERSION}.tar.gz \
  && chown -R oase:oase /home/oase \
- && rm oase_maven.tar.gz
+ && rm oase_maven-${OASE_VERSION}.tar.gz
 
 WORKDIR /exastro/OASE/oase-root
 
