@@ -36,7 +36,7 @@ RUN curl -k -LO https://archive.apache.org/dist/maven/maven-3/3.6.1/binaries/apa
 WORKDIR /home/oase/.m2/repository
 RUN cp /exastro/OASE/oase_install_package/OASE/oase-contents/oase_maven.tar.gz . \
  && tar xvzf oase_maven.tar.gz \
- && chown -R oase:oase /home/oase/.m2/repository \
+ && chown -R oase:oase /home/oase \
  && rm oase_maven.tar.gz
 
 WORKDIR /exastro/OASE/oase-root
@@ -45,6 +45,7 @@ ENV http_proxy=
 ENV https_proxy=
 
 USER 49152
+EXPOSE 50001
 
 CMD ["python3", "/exastro/OASE/oase-root/backyards/apply_driver/oase_apply.py"]
 
