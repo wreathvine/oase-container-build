@@ -18,7 +18,7 @@
     config_name: DM Request recipient
     category: DMSETTINGS
     config_id: DM_IPADDRPORT
-    value: oase-business-central:8080
+    value: business-central:8080
     maintenance_flag: 0
     last_update_timestamp: 2019-07-01T00:00:00+0900
     last_update_user: システム管理者
