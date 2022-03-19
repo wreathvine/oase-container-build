@@ -1,6 +1,8 @@
+!.gitkeep
 .env
 .talismanrc
 */volume/*
 */logs/*
 *.bk
 *.bak
+*.log
