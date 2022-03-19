@@ -1,33 +1,33 @@
 version: "3"
 services:
 
-  # oase-base:
-  #   image: exastro/oase-base:${OASE_VERSION:-latest}
-  #   container_name: oase-base
-  #   hostname: oase-base
-  #   restart: on-failure
-  #   tty: true
-  #   build:
-  #     context: ./oase-base
-  #     dockerfile: ./Dockerfile
-  #     args:
-  #       - OASE_VERSION=${OASE_VERSION:-latest}
-  #       - HTTP_PROXY=${HTTP_PROXY}
-  #       - HTTPS_PROXY=${HTTPS_PROXY}
+  oase-base:
+    image: exastro/oase-base:${OASE_VERSION:-latest}
+    container_name: oase-base
+    hostname: oase-base
+    restart: on-failure
+    tty: true
+    build:
+      context: ./oase-base
+      dockerfile: ./Dockerfile
+      args:
+        - OASE_VERSION=${OASE_VERSION:-latest}
+        - HTTP_PROXY=${HTTP_PROXY}
+        - HTTPS_PROXY=${HTTPS_PROXY}
 
-  # oase-backyard:
-  #   image: exastro/oase-backyard:${OASE_VERSION:-latest}
-  #   container_name: oase-backyard
-  #   hostname: oase-backyard
-  #   restart: on-failure
-  #   tty: true
-  #   build:
-  #     context: ./oase-backyard
-  #     dockerfile: ./Dockerfile
-  #     args:
-  #       - OASE_VERSION=${OASE_VERSION:-latest}
-  #       - HTTP_PROXY=${HTTP_PROXY}
-  #       - HTTPS_PROXY=${HTTPS_PROXY}
+  oase-backyard:
+    image: exastro/oase-backyard:${OASE_VERSION:-latest}
+    container_name: oase-backyard
+    hostname: oase-backyard
+    restart: on-failure
+    tty: true
+    build:
+      context: ./oase-backyard
+      dockerfile: ./Dockerfile
+      args:
+        - OASE_VERSION=${OASE_VERSION:-latest}
+        - HTTP_PROXY=${HTTP_PROXY}
+        - HTTPS_PROXY=${HTTPS_PROXY}
 
   oase-setup:
     image: exastro/oase-setup:${OASE_VERSION:-latest}
@@ -42,18 +42,10 @@ services:
         - OASE_VERSION=${OASE_VERSION:-latest}
         - HTTP_PROXY=${HTTP_PROXY}
         - HTTPS_PROXY=${HTTPS_PROXY}
-    environment:
-      MARIADB_DATABASE: ${MARIADB_DATABASE:-OASE_DB}
-      MARIADB_USER: ${MARIADB_USER:-OASE_USER}
-      MARIADB_PASSWORD: ${MARIADB_PASSWORD:-Ch@ngeMe}
-      RABBITMQ_USER: ${RABBITMQ_USER:-admin}
-      RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD:-Ch@ngeMe}
-      DROOLS_USER_NAME: ${DROOLS_USER_NAME:-admin}
-      DROOLS_USER_PASSWORD: ${DROOLS_USER_PASSWORD:-admin}
     networks:
       - private
     depends_on:
-      - oase-mariadb
+      - mariadb
 
   oase-web:
     image: exastro/oase-web:${OASE_VERSION:-latest}
@@ -69,12 +61,15 @@ services:
         - HTTP_PROXY=${HTTP_PROXY}
         - HTTPS_PROXY=${HTTPS_PROXY}
     volumes:
-      - ./oase-web/logs:/exastro/OASE/oase-root/logs/webaplogs
+      - ./logs/webaplogs:/exastro/OASE/oase-root/logs/webaplogs
     ports:
-      - '${OASE_HTTP_PORT:-80}:80'
+      - '${OASE_WEB_PORT:-40080}:80'
     networks:
       - public
       - private
+    depends_on:
+      oase-setup:
+        condition: service_completed_successfully
 
   oase-apply:
     image: exastro/oase-apply:${OASE_VERSION:-latest}
@@ -89,17 +84,14 @@ services:
         - OASE_VERSION=${OASE_VERSION:-latest}
         - HTTP_PROXY=${HTTP_PROXY}
         - HTTPS_PROXY=${HTTPS_PROXY}
-    environment:
-      MARIADB_DATABASE: ${MARIADB_DATABASE:-OASE_DB}
-      MARIADB_USER: ${MARIADB_USER:-OASE_USER}
-      MARIADB_PASSWORD: ${MARIADB_PASSWORD:-Ch@ngeMe}
     volumes:
-      - ./oase-apply/logs:/exastro/OASE/oase-root/logs/backyardlogs/oase_apply
-      - ./oase-apply/volume/exastro/rule:/exastro/rule
-      - ./oase-apply/volume/exastro/OASE/oase-root/temp:/exastro/OASE/oase-root/temp
-      - oase-m2-repository:/home/oase/.m2/repository/com/oase
+      - ./logs/oase_apply:/exastro/OASE/oase-root/logs/backyardlogs/oase_apply
+      - common-m2-repository:/home/oase/.m2/repository/com/oase
     networks:
       - private
+    depends_on:
+      oase-setup:
+        condition: service_completed_successfully
 
   oase-accept:
     image: exastro/oase-accept:${OASE_VERSION:-latest}
@@ -112,14 +104,13 @@ services:
       dockerfile: ./Dockerfile
       args:
         - OASE_VERSION=${OASE_VERSION:-latest}
-    environment:
-      MARIADB_DATABASE: ${MARIADB_DATABASE:-OASE_DB}
-      MARIADB_USER: ${MARIADB_USER:-OASE_USER}
-      MARIADB_PASSWORD: ${MARIADB_PASSWORD:-Ch@ngeMe}
     volumes:
-      - ./oase-accept/logs:/exastro/OASE/oase-root/logs/backyardlogs/oase_accept
+      - ./logs/oase_accept:/exastro/OASE/oase-root/logs/backyardlogs/oase_accept
     networks:
       - private
+    depends_on:
+      oase-setup:
+        condition: service_completed_successfully
 
   oase-agent:
     image: exastro/oase-agent:${OASE_VERSION:-latest}
@@ -132,12 +123,8 @@ services:
       dockerfile: ./Dockerfile
       args:
         - OASE_VERSION=${OASE_VERSION:-latest}
-    environment:
-      MARIADB_DATABASE: ${MARIADB_DATABASE:-OASE_DB}
-      MARIADB_USER: ${MARIADB_USER:-OASE_USER}
-      MARIADB_PASSWORD: ${MARIADB_PASSWORD:-Ch@ngeMe}
     volumes:
-      - ./oase-agent/logs:/exastro/OASE/oase-root/logs/backyardlogs/oase_agent
+      - ./logs/oase_agent:/exastro/OASE/oase-root/logs/backyardlogs/oase_agent
     networks:
       - private
 
@@ -152,12 +139,8 @@ services:
       dockerfile: ./Dockerfile
       args:
         - OASE_VERSION=${OASE_VERSION:-latest}
-    environment:
-      MARIADB_DATABASE: ${MARIADB_DATABASE:-OASE_DB}
-      MARIADB_USER: ${MARIADB_USER:-OASE_USER}
-      MARIADB_PASSWORD: ${MARIADB_PASSWORD:-Ch@ngeMe}
     volumes:
-      - ./oase-agent/logs:/exastro/OASE/oase-root/logs/backyardlogs/oase_action
+      - ./logs/oase_action:/exastro/OASE/oase-root/logs/backyardlogs/oase_action
     networks:
       - private
 
@@ -172,12 +155,8 @@ services:
       dockerfile: ./Dockerfile
       args:
         - OASE_VERSION=${OASE_VERSION:-latest}
-    environment:
-      MARIADB_DATABASE: ${MARIADB_DATABASE:-OASE_DB}
-      MARIADB_USER: ${MARIADB_USER:-OASE_USER}
-      MARIADB_PASSWORD: ${MARIADB_PASSWORD:-Ch@ngeMe}
     volumes:
-      - ./oase-ita-collaboration/logs:/exastro/OASE/oase-root/logs/backyardlogs/exastro_collaboration
+      - ./logs/exastro_collaboration:/exastro/OASE/oase-root/logs/backyardlogs/exastro_collaboration
     networks:
       - private
 
@@ -192,12 +171,8 @@ services:
       dockerfile: ./Dockerfile
       args:
         - OASE_VERSION=${OASE_VERSION:-latest}
-    environment:
-      MARIADB_DATABASE: ${MARIADB_DATABASE:-OASE_DB}
-      MARIADB_USER: ${MARIADB_USER:-OASE_USER}
-      MARIADB_PASSWORD: ${MARIADB_PASSWORD:-Ch@ngeMe}
     volumes:
-      - ./oase-servicenow-notification/logs:/exastro/OASE/oase-root/logs/backyardlogs/servicenow_notification
+      - ./logs/servicenow_notification:/exastro/OASE/oase-root/logs/backyardlogs/servicenow_notification
     networks:
       - private
 
@@ -212,41 +187,35 @@ services:
       dockerfile: ./Dockerfile
       args:
         - OASE_VERSION=${OASE_VERSION:-latest}
-    environment:
-      MARIADB_DATABASE: ${MARIADB_DATABASE:-OASE_DB}
-      MARIADB_USER: ${MARIADB_USER:-OASE_USER}
-      MARIADB_PASSWORD: ${MARIADB_PASSWORD:-Ch@ngeMe}
     volumes:
-      - ./oase-zabbix-monitoring/logs:/exastro/OASE/oase-root/logs/backyardlogs/oase_monitoring
+      - ./logs/oase_monitoring:/exastro/OASE/oase-root/logs/backyardlogs/oase_monitoring
     networks:
       - private
 
-  oase-rabbitmq:
+  rabbitmq:
     image: rabbitmq:3.9.8-management
-    container_name: oase-rabbitmq
-    hostname: oase-rabbitmq
+    container_name: rabbitmq
+    hostname: rabbitmq
     restart: on-failure
     tty: true
     environment:
-      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER:-admin}
-      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD:-Ch@ngeMe}
-    # volumes:
-      # - rabbitmq-data:/var/lib/rabbitmq
+      RABBITMQ_DEFAULT_USER: ${MQ_USER:-admin}
+      RABBITMQ_DEFAULT_PASS: ${MQ_PASSWORD:-Ch@ngeMe}
     ports:
-      - '5672:5672'
-      - '15672:15672'
+      - "${RATBBITMQ_NODE_PORT:-45672}:5672"
+      - "${RATBBITMQ_MGT_PORT:-55672}:15672"
     networks:
       - public
       - private
 
-  oase-mariadb:
+  mariadb:
     image: mariadb:10.6.4
-    container_name: oase-mariadb
-    hostname: oase-mariadb
+    container_name: mariadb
+    hostname: mariadb
     restart: on-failure
     tty: true
     ports:
-      - "3306:3306"
+      - "${DB_PORT:-43306}:3306"
     environment:
       TZ: "Asia/Tokyo"
       MARIADB_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD:-Ch@ngeMe}
@@ -254,8 +223,6 @@ services:
       MARIADB_USER: ${MARIADB_USER:-OASE_USER}
       MARIADB_PASSWORD: ${MARIADB_PASSWORD:-Ch@ngeMe}
       MARIADB_ROOT_HOST: "%"
-    # volumes:
-      # - mariadb-data:/var/lib/mysql
     networks:
       - private
 
@@ -267,73 +234,64 @@ services:
     tty: true
     privileged: true
     ports:
-      - ${ITA_HTTP_PORT:-51080}:80
-      - ${ITA_HTTPS_PORT:-51443}:443
+      - ${ITA_PORT:-41080}:80
     networks:
       - private
 
-  oase-business-central:
-    image: exastro/oase-business-central:${OASE_VERSION:-latest}
-    container_name: oase-business-central
-    hostname: oase-business-central
+  business-central:
+    image: exastro/business-central:${OASE_VERSION:-latest}
+    container_name: business-central
+    hostname: business-central
     restart: on-failure
     tty: true
     build:
-      context: ./oase-business-central
+      context: ./business-central
       dockerfile: ./Dockerfile
-      args:
-        - OASE_VERSION=${OASE_VERSION:-latest}
     ports:
-      - "${BUSINESS_CENTRAL_PORT:-8080}:8080"
+      - "${BUSINESS_CENTRAL_PORT:-48080}:8080"
     environment:
-      DROOLS_USER_NAME: ${DROOLS_USER_NAME:-admin}
-      DROOLS_USER_PASSWORD: ${DROOLS_USER_PASSWORD:-admin}
-      DROOLS_USER_ROLE: ${DROOLS_USER_ROLE:-"admin,kie-server,rest-all"}
-      KIE_SERVER_LOCATION: http://oase-kie-server:8080/kie-server/services/rest/server
-      KIE_SERVER_CONTROLLER: http://oase-business-central:8080/business-central/rest/controller
-      KIE_MAVEN_REPO: http://oase-business-central:8080/business-central/maven2
+      DROOLS_USER_NAME: ${JBOSS_USER:-admin}
+      DROOLS_USER_PASSWORD: ${JBOSS_PASSWORD:-admin}
+      DROOLS_USER_ROLE: ${JBOSS_USER_ROLE:-"admin,kie-server,rest-all"}
+      KIE_SERVER_LOCATION: http://kie-server:8080/kie-server/services/rest/server
+      KIE_SERVER_CONTROLLER: http://business-central:8080/business-central/rest/controller
+      KIE_MAVEN_REPO: http://business-central:8080/business-central/maven2
     volumes:
-#      - oase-business-central:/opt/jboss/wildfly
-      - oase-m2-repository:/opt/jboss/.m2/repository/com/oase
+      - common-m2-repository:/opt/jboss/.m2/repository/com/oase
     networks:
       - private
 
-  oase-kie-server:
-    image: exastro/oase-kie-server:${OASE_VERSION:-latest}
-    container_name: oase-kie-server
-    hostname: oase-kie-server
+  kie-server:
+    image: exastro/kie-server:${OASE_VERSION:-latest}
+    container_name: kie-server
+    hostname: kie-server
     restart: on-failure
     tty: true
     build:
-      context: ./oase-kie-server
+      context: ./kie-server
       dockerfile: ./Dockerfile
-      args:
-        - OASE_VERSION=${OASE_VERSION:-latest}
     ports:
-      - ${KIE_SERVER_HTTP:-8180}:8080
+      - "${KIE_SERVER_HTTP:-48180}:8080"
     volumes:
-      - oase-m2-repository:/opt/jboss/.m2/repository/com/oase
+      - common-m2-repository:/opt/jboss/.m2/repository/com/oase
     environment:
-      DROOLS_USER_NAME: ${DROOLS_USER_NAME:-admin}
-      DROOLS_USER_PASSWORD: ${DROOLS_USER_PASSWORD:-admin}
-      DROOLS_USER_ROLE: ${DROOLS_USER_ROLE:-"admin,kie-server,rest-all"}
-      KIE_SERVER_LOCATION: http://oase-kie-server:8080/kie-server/services/rest/server
-      KIE_SERVER_CONTROLLER: http://oase-business-central:8080/business-central/rest/controller
-      KIE_MAVEN_REPO: http://oase-business-central:8080/business-central/maven2
+      DROOLS_USER_NAME: ${JBOSS_USER:-admin}
+      DROOLS_USER_PASSWORD: ${JBOSS_PASSWORD:-admin}
+      DROOLS_USER_ROLE: ${JBOSS_USER_ROLE:-"admin,kie-server,rest-all"}
+      KIE_SERVER_LOCATION: http://kie-server:8080/kie-server/services/rest/server
+      KIE_SERVER_CONTROLLER: http://business-central:8080/business-central/rest/controller
+      KIE_MAVEN_REPO: http://business-central:8080/business-central/maven2
     volumes:
-#      - oase-kie-server:/opt/jboss/wildfly
-      - oase-m2-repository:/opt/jboss/.m2/repository/com/oase
+      - common-m2-repository:/opt/jboss/.m2/repository/com/oase
     depends_on:
-      - oase-business-central
+      - business-central
     networks:
       - private
+    depends_on:
+      - business-central
 
 volumes:
-  oase-m2-repository:
-  oase-rabbitmq:
-  oase-mariadb:
-  oase-business-central:
-  oase-kie-server:
+  common-m2-repository:
 
 networks:
   public:

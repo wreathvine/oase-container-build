@@ -6,6 +6,8 @@ FROM exastro/oase-base:${OASE_VERSION} as resource
 
 FROM python:3.6-slim
 
+ARG HTTP_PROXY
+ARG HTTPS_PROXY
 ENV http_proxy=${HTTP_PROXY}
 ENV https_proxy=${HTTPS_PROXY}
 

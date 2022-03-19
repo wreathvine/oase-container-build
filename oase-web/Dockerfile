@@ -1,11 +1,12 @@
 ARG OASE_VERSION
-ARG HTTP_PROXY
-ARG HTTPS_PROXY
 
 FROM exastro/oase-base:${OASE_VERSION} as resource
 FROM httpd:2.4 as apache24
-
 FROM python:3.6-slim
+
+ARG OASE_VERSION
+ARG HTTP_PROXY
+ARG HTTPS_PROXY
 
 # Enviroments
 ENV OASE_VERSION=${OASE_VERSION:-latest}

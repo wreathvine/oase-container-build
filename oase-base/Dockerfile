@@ -1,8 +1,8 @@
+FROM python:3.6
+
 ARG OASE_VERSION
 ARG HTTP_PROXY
 ARG HTTPS_PROXY
-
-FROM python:3.6
 
 ENV OASE_VERSION=${OASE_VERSION:-latest}
 ENV http_proxy=${HTTP_PROXY}
@@ -20,7 +20,8 @@ RUN if [ "${OASE_VERSION}" = "latest" ]; then \
       git clone --depth=1 --single-branch https://github.com/exastro-suite/oase.git \
       -b Exastro-OASE-${OASE_VERSION} OASE; \
     fi \
-    && rm -rf /exastro/OASE/.git* /exastro/OASE/oase_documents
+    && rm -rf /exastro/OASE/.git* /exastro/OASE/oase_documents \
+    && rm -rf /exastro/OASE/oase_install_package/OASE/oase-contents
 
 # Configuration
 RUN sed -i.org '/mod_wsgi/d' /exastro/OASE/oase_install_package/install_scripts/list/requirements.txt
@@ -45,3 +46,5 @@ ENV http_proxy=
 ENV https_proxy=
 
 USER 49152
+
+CMD ["sh", "-c", "exit 0"]
