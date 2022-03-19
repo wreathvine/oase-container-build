@@ -610,7 +610,7 @@ def apply(request):
 
             PROTOCOL, IPADDRPORT, dmuser, dmpass = get_dm_conf()
 
-            HTTP = '%s://%s/business-central/rest/controller/management/servers/kie-server-oase-kie-server/containers/%s' % (
+            HTTP = '%s://%s/business-central/rest/controller/management/servers/kie-server-kie-server/containers/%s' % (
                 PROTOCOL, IPADDRPORT, ContID)
 
             response = requests.put(HTTP, headers=headers, data=send_data, auth=(dmuser, dmpass))
@@ -698,7 +698,7 @@ def apply(request):
                         'content-type': 'application/json',
                     }
 
-                    HTTP2 = '%s://%s/business-central/rest/controller/management/servers/kie-server-oase-kie-server/containers/%s' % (
+                    HTTP2 = '%s://%s/business-central/rest/controller/management/servers/kie-server-kie-server/containers/%s' % (
                         PROTOCOL, IPADDRPORT, oldContID)
                     response2 = requests.delete(HTTP2, headers=headers, auth=(dmuser, dmpass))
                     logger.system_log('LOSI12000', 'response2: %s, oldContID: %s' % (response2, oldContID))
@@ -1244,7 +1244,7 @@ def delete(request):
             PROTOCOL, IPADDRPORT, dmuser, dmpass = get_dm_conf()
 
             if product_ContID is not None:
-                HTTP2 = '%s://%s/business-central/rest/controller/management/servers/kie-server-oase-kie-server/containers/%s' % (
+                HTTP2 = '%s://%s/business-central/rest/controller/management/servers/kie-server-kie-server/containers/%s' % (
                     PROTOCOL, IPADDRPORT, product_ContID)
                 response2 = requests.delete(HTTP2, headers=headers, auth=(dmuser, dmpass))
                 logger.system_log('LOSI12000', 'response2: %s, product_ContID: %s' % (response2, product_ContID))
@@ -1254,7 +1254,7 @@ def delete(request):
                     raise Exception()
 
             if staging_ContID is not None:
-                HTTP2 = '%s://%s/business-central/rest/controller/management/servers/kie-server-oase-kie-server/containers/%s' % (
+                HTTP2 = '%s://%s/business-central/rest/controller/management/servers/kie-server-kie-server/containers/%s' % (
                     PROTOCOL, IPADDRPORT, staging_ContID)
                 response2 = requests.delete(HTTP2, headers=headers, auth=(dmuser, dmpass))
                 logger.system_log('LOSI12000', 'response2: %s, staging_ContID: %s' % (response2, staging_ContID))
@@ -1436,9 +1436,9 @@ def build_kjar(request):
             # ビルド実行
             exec_cmd = []
             exec_cmd.append('mvn')
-            # exec_cmd.append('-s')
-            # exec_cmd.append('/home/oase/.m2/settings.xml')
-            # exec_cmd.append('-o')
+            exec_cmd.append('-s')
+            exec_cmd.append('/home/oase/.m2/settings.xml')
+            exec_cmd.append('-o')
             exec_cmd.append('install')
             exec_cmd.append('-Ddrools.dateformat=yyyy-MM-dd HH:mm')
             exec_cmd.append('-f')
